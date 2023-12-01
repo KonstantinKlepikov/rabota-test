@@ -1,8 +1,8 @@
 # TODO
 
-- [ ] project structure
-- [ ] docker stack
-- [ ] mongo db
+- [x] project structure
+- [x] docker stack
+- [x] mongo db
 - [ ] api
 - [ ] query api
 - [ ] crud
