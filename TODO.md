@@ -4,7 +4,8 @@
 - [x] docker stack
 - [x] mongo db
 - [ ] api
-- [ ] query api
+- [x] aiohttp client
+- [ ] query to external api
 - [ ] crud
 - [ ] schemes
 - [ ] endpoints

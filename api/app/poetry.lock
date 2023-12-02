@@ -1,4 +1,12 @@
 [[package]]
+name = "aiofiles"
+version = "23.2.1"
+description = "File support for asyncio."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "aiohttp"
 version = "3.9.1"
 description = "Async http client/server framework (asyncio)"
@@ -426,7 +434,7 @@ notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
 test = ["pickleshare", "pytest (<7.1)", "pytest-asyncio (<0.22)", "testpath"]
-test-extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.22)", "pandas", "pickleshare", "pytest (<7.1)", "pytest-asyncio (<0.22)", "testpath", "trio"]
+test_extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.22)", "pandas", "pickleshare", "pytest (<7.1)", "pytest-asyncio (<0.22)", "testpath", "trio"]
 
 [[package]]
 name = "isort"
@@ -564,7 +572,7 @@ python-versions = "*"
 [package.extras]
 argon2 = ["argon2-cffi (>=18.2.0)"]
 bcrypt = ["bcrypt (>=3.1.0)"]
-build-docs = ["cloud-sptheme (>=1.10.1)", "sphinx (>=1.6)", "sphinxcontrib-fulltoc (>=1.2.0)"]
+build_docs = ["cloud-sptheme (>=1.10.1)", "sphinx (>=1.6)", "sphinxcontrib-fulltoc (>=1.2.0)"]
 totp = ["cryptography"]
 
 [[package]]
@@ -887,7 +895,7 @@ urllib3 = ">=1.21.1,<3"
 
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
-use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
+use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
 name = "rfc3986"
@@ -1085,9 +1093,13 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.10.6"
-content-hash = "da7609b975ee8f5c7e497bbfef76bbc41ea1166c7a75637923112be885dcf6b0"
+content-hash = "9bd9dfeeafc984fd590ebe8bb24f1cdb10cdee556c963393b155f02742afa559"
 
 [metadata.files]
+aiofiles = [
+    {file = "aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107"},
+    {file = "aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a"},
+]
 aiohttp = [
     {file = "aiohttp-3.9.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:e1f80197f8b0b846a8d5cf7b7ec6084493950d0882cc5537fb7b96a69e3c8590"},
     {file = "aiohttp-3.9.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:c72444d17777865734aa1a4d167794c34b63e5883abb90356a0364a28904e6c0"},

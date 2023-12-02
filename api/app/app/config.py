@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     MONGODB_URL: SecretStr
     DB_NAME: str
 
+    # aiohttp session parameters
+    SIZE_POOL_HTTP: int = 100
+    TIMEOUT_AIOHTTP: int = 2
+    QUERY_SLEEP: float = 0.05
+
     # open-api settings
     title: str = poetry_data['name']
     descriprion: str = poetry_data['description']
