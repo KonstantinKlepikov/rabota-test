@@ -3,7 +3,6 @@ import json
 from functools import lru_cache
 from typing import Any
 from aiohttp import web
-from aiohttp.test_utils import TestClient
 from yarl import URL
 from app.core.http_session import SessionMaker
 
@@ -59,7 +58,7 @@ def urls() -> dict[str, str]:
 
 
 @pytest.fixture
-def client(loop, aiohttp_client) -> TestClient:
+def custom_aiohttp_client(loop, aiohttp_client):
     """Make a test client
     """
     app = web.Application()
@@ -74,9 +73,9 @@ def client(loop, aiohttp_client) -> TestClient:
 
 
 @pytest.fixture
-def session(client: TestClient) -> SessionMaker:
-    """Make test session
+def session(custom_aiohttp_client) -> SessionMaker:
+    """Make test aiohttp session
     """
-    SessionMaker.aiohttp_client = client
+    SessionMaker.aiohttp_client = custom_aiohttp_client
     session = SessionMaker()
     return session

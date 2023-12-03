@@ -7,7 +7,7 @@ class VacanciesQuery:
 
     Atrs:
         session (SessionMaker): aiohttp session
-        url (str): url for entry query
+        url (str): url for query
     """
     def __init__(
         self,

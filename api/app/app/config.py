@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     TIMEOUT_AIOHTTP: int = 2
     QUERY_SLEEP: float = 0.05
 
+    # endpoints
+    VAC_SEQ: str = "http://gsr-rabota.ru/api/v2/Vacancies/All/List"
+
     # open-api settings
     title: str = poetry_data['name']
     descriprion: str = poetry_data['description']

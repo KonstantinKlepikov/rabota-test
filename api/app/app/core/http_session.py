@@ -24,7 +24,7 @@ class SessionMaker:
                 limit_per_host=settings.SIZE_POOL_HTTP
                     )
             cls.aiohttp_client = ClientSession(
-                timeout=timeout,
+                # timeout=timeout,
                 connector=connector,
                     )
 
