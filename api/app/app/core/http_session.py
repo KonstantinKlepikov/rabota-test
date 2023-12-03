@@ -1,6 +1,6 @@
 from socket import AF_INET
 from typing import Any
-from aiohttp import ClientSession, ClientTimeout, TCPConnector
+from aiohttp import ClientSession, TCPConnector
 from fastapi import HTTPException
 from app.config import settings
 
@@ -18,15 +18,11 @@ class SessionMaker:
             ClientSession: client session object
         """
         if cls.aiohttp_client is None:
-            timeout = ClientTimeout(total=settings.TIMEOUT_AIOHTTP)
             connector = TCPConnector(
                 family=AF_INET,
                 limit_per_host=settings.SIZE_POOL_HTTP
                     )
-            cls.aiohttp_client = ClientSession(
-                # timeout=timeout,
-                connector=connector,
-                    )
+            cls.aiohttp_client = ClientSession(connector=connector)
 
         return cls.aiohttp_client
 
@@ -77,7 +73,6 @@ class SessionMaker:
                     status_code=429,
                     detail="To Many Requests"
                         )
-            # FIXME: add here 200 and else with other statuses codes
             return await response.json()
 
     @classmethod
