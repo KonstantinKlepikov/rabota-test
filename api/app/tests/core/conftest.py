@@ -3,8 +3,10 @@ import json
 from functools import lru_cache
 from typing import Any
 from aiohttp import web
+from aiohttp.test_utils import TestClient
 from yarl import URL
 from app.core.http_session import SessionMaker
+from app.config import settings
 
 
 @lru_cache
@@ -15,7 +17,7 @@ def vacancies_raw() -> list[dict[str: Any]]:
         return json.loads(f.read())
 
 
-def vacancies(request: web.Request) -> web.Response:
+async def vacancies(request: web.Request) -> web.Response:
     """Mock vacancies response
     """
     return web.Response(
@@ -58,7 +60,7 @@ def urls() -> dict[str, str]:
 
 
 @pytest.fixture
-def custom_aiohttp_client(loop, aiohttp_client):
+def custom_aiohttp_client(loop, aiohttp_client) -> TestClient:
     """Make a test client
     """
     app = web.Application()
@@ -73,9 +75,10 @@ def custom_aiohttp_client(loop, aiohttp_client):
 
 
 @pytest.fixture
-def session(custom_aiohttp_client) -> SessionMaker:
+def session(custom_aiohttp_client: TestClient) -> SessionMaker:
     """Make test aiohttp session
     """
+    c = SessionMaker.aiohttp_client
     SessionMaker.aiohttp_client = custom_aiohttp_client
-    session = SessionMaker()
-    return session
+    yield SessionMaker
+    SessionMaker.aiohttp_client = c

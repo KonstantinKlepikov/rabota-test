@@ -3,8 +3,9 @@ from typing import Callable
 from fastapi import HTTPException
 from app.core.queries import VacanciesQuery
 from app.core.http_session import SessionMaker
-from app.schemas.scheme_vacancies import VacancyIn
+from app.schemas.scheme_vacancies import VacancyInOut
 from tests.core.conftest import vacancies_raw
+from app.config import settings
 
 
 @pytest.fixture
@@ -13,7 +14,7 @@ def queries(session: SessionMaker) -> VacanciesQuery:
     """
     q = VacanciesQuery(
         session,
-        "http://gsr-rabota.ru/api/v2/Vacancies/All/List",
+        '/api/v2/Vacancies/All/List',
             )
     return q
 
@@ -32,7 +33,6 @@ class TestVacanciesQuery:
             return vacancies_raw()
         monkeypatch.setattr(session, "get_query", mock_return)
 
-    @pytest.mark.skip("FIXME: error with aiohttp client")
     async def test_query_vacancie(
         self,
         queries: VacanciesQuery,
@@ -41,6 +41,6 @@ class TestVacanciesQuery:
         """
         data = vacancies_raw()
         result = await queries.query_vacancies()
-        assert len[result] == len(data)
+        assert len(result) == len(data)
         assert isinstance(result, list)
-        assert isinstance(result[0], VacancyIn)
+        assert isinstance(result[0], VacancyInOut)

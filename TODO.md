@@ -6,6 +6,8 @@
 - [x] aiohttp client
 - [x] query to external api
 - [x] crud
-- [ ] schemas
-- [ ] endpoints
+- [x] schemas
+- [x] endpoints
+- [x] text search
+- [ ] text search with parameters
 - [ ] tests

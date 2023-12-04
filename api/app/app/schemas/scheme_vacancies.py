@@ -1,6 +1,7 @@
 from typing import Any
 from pydantic import BaseModel
-from pydantic.functional_validators import BeforeValidator
+from pydantic.functional_validators import BeforeValidator, AfterValidator
+from bson.objectid import ObjectId
 from typing_extensions import Annotated
 
 
@@ -11,12 +12,27 @@ def strip_spaces(v: Any) -> str | int | float:
         return v
 
 
+def get_and_words(v: list[str]) -> list[str]:
+    """ This used for AND words db query
+    """
+    return ['"' + w + '"' for w in v]
+
+
+def check_object_id(value: str) -> str:
+    if not ObjectId.is_valid(value):
+        raise ValueError('ObjectId required')
+    return value
+
+
+PydanticObjectId = Annotated[str, AfterValidator(check_object_id)]
 SalaryVolume = Annotated[int, BeforeValidator(strip_spaces)]
+SearchString = Annotated[list[str], AfterValidator(get_and_words)]
 
 
-class VacancyIn(BaseModel):
+class VacancyInOut(BaseModel):
     """Vacancy in
     """
+    _id: PydanticObjectId | None = None
     vacancy_id: int
     vacplacement_id: int | None = None
     profid: int | None = None
@@ -55,8 +71,17 @@ class VacancyIn(BaseModel):
     titleweb: str | None = None
 
     class Config:
+        # allow extra fields withoud validation
         extra = 'allow'
 
 
-class VacancyOut(BaseModel):
-    """"""
+class VacancyQuery(BaseModel):
+    """Query db for vacancy pattern
+
+    Use exclide_none with dumb() method to exclude
+    non-values for query
+    """
+    placeid: int | None = None
+    profid: int | None = None
+    clientid: int | None = None
+    searchstring: SearchString

@@ -3,13 +3,14 @@ from typing import Generator
 from pydantic_settings import BaseSettings
 from pydantic import MongoDsn
 from pymongo.client_session import ClientSession
+from pymongo import TEXT
 from motor.motor_asyncio import AsyncIOMotorClient
 from httpx import AsyncClient
 from app.main import app
 from app.config import settings
 from app.schemas.constraint import Collections
 from app.db.init_db import get_session
-from app.schemas.scheme_vacancies import VacancyIn, VacancyOut
+from app.schemas.scheme_vacancies import VacancyInOut
 from app.crud.crud_vacancies import CRUDVacancies
 
 
@@ -35,22 +36,23 @@ class BdTestContext:
 
 
 @pytest.fixture(scope="function")
-def mock_data() -> list[VacancyIn]:
+def mock_data() -> list[VacancyInOut]:
     """Mock vacancies data
     """
 
 
 @pytest.fixture(scope="function")
-async def db(mock_data: list[VacancyIn]) -> Generator:
+async def db(mock_data: list[VacancyInOut]) -> Generator:
     """Get mock mongodb
     """
     async with BdTestContext(
         test_settings.TEST_MONGODB_URL.unicode_string(),
-        settings.DB_NAME
+        'test-db'
             ) as d:
 
         for collection in Collections.get_values():
             await d.create_collection(collection)
+            await d[collection].create_index({"$**": "text"}, name='search_index') # TODO: test me
 
         if mock_data:
             collection = d[Collections.VACANCIES.value]
@@ -65,7 +67,7 @@ async def crud_vacancies() -> CRUDVacancies:
     """Get crud users
     """
     return CRUDVacancies(
-        schema=VacancyOut,
+        schema=VacancyInOut,
         col_name=Collections.VACANCIES.value,
         db_name=settings.DB_NAME
             )
