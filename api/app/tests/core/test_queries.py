@@ -1,11 +1,9 @@
 import pytest
 from typing import Callable
-from fastapi import HTTPException
 from app.core.queries import VacanciesQuery
 from app.core.http_session import SessionMaker
 from app.schemas.scheme_vacancies import VacancyInOut
 from tests.core.conftest import vacancies_raw
-from app.config import settings
 
 
 @pytest.fixture
@@ -33,11 +31,11 @@ class TestVacanciesQuery:
             return vacancies_raw()
         monkeypatch.setattr(session, "get_query", mock_return)
 
-    async def test_query_vacancie(
+    async def test_query_vacancies(
         self,
         queries: VacanciesQuery,
             ) -> None:
-        """Test make_simple_entry
+        """Testquery vacancies
         """
         data = vacancies_raw()
         result = await queries.query_vacancies()

@@ -9,5 +9,5 @@
 - [x] schemas
 - [x] endpoints
 - [x] text search
-- [ ] text search with parameters
+- [x] text search with parameters
 - [ ] tests

@@ -3,7 +3,6 @@ from typing import Generator
 from pydantic_settings import BaseSettings
 from pydantic import MongoDsn
 from pymongo.client_session import ClientSession
-from pymongo import TEXT
 from motor.motor_asyncio import AsyncIOMotorClient
 from httpx import AsyncClient
 from app.main import app
@@ -52,7 +51,10 @@ async def db(mock_data: list[VacancyInOut]) -> Generator:
 
         for collection in Collections.get_values():
             await d.create_collection(collection)
-            await d[collection].create_index({"$**": "text"}, name='search_index') # TODO: test me
+            await d[collection].create_index(
+                {"$**": "text"},
+                name='search_index'
+                    )  # TODO: test me
 
         if mock_data:
             collection = d[Collections.VACANCIES.value]

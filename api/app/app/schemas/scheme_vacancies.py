@@ -1,10 +1,10 @@
 from typing import Any
 from pydantic import BaseModel
 from pydantic.functional_validators import BeforeValidator, AfterValidator
-from bson.objectid import ObjectId
 from typing_extensions import Annotated
 
 
+# TODO: test me
 def strip_spaces(v: Any) -> str | int | float:
     if isinstance(v, str):
         return v.replace(' ', '')
@@ -12,19 +12,13 @@ def strip_spaces(v: Any) -> str | int | float:
         return v
 
 
+# TODO: test me
 def get_and_words(v: list[str]) -> list[str]:
     """ This used for AND words db query
     """
     return ['"' + w + '"' for w in v]
 
 
-def check_object_id(value: str) -> str:
-    if not ObjectId.is_valid(value):
-        raise ValueError('ObjectId required')
-    return value
-
-
-PydanticObjectId = Annotated[str, AfterValidator(check_object_id)]
 SalaryVolume = Annotated[int, BeforeValidator(strip_spaces)]
 SearchString = Annotated[list[str], AfterValidator(get_and_words)]
 
@@ -32,7 +26,6 @@ SearchString = Annotated[list[str], AfterValidator(get_and_words)]
 class VacancyInOut(BaseModel):
     """Vacancy in
     """
-    _id: PydanticObjectId | None = None
     vacancy_id: int
     vacplacement_id: int | None = None
     profid: int | None = None
@@ -74,11 +67,73 @@ class VacancyInOut(BaseModel):
         # allow extra fields withoud validation
         extra = 'allow'
 
+        json_schema_extra = {
+            "example": {
+                "vacancy_id": 1020000000001,
+                "vacplacement_id": 152,
+                "profid": 4,
+                "proftitle": "Работник торгового зала ",
+                "placeid": 143,
+                "placetitle": "Уфа",
+                "salary_volume": 53240,
+                "salary_type": 0,
+                "directionid": 2,
+                "directiontitle": "Ритейл",
+                "stafftype": 0,
+                "vdescription": "Требуются работники торгового зала в сеть гипермаркетов ",
+                "address": "Республика Башкортостан, г. Уфа, ул. Губайдуллина, д.  6",
+                "latitude": 54.720907,
+                "longitude": 56.000813,
+                "is_active": 1,
+                "salary_volume_ex": "53240 р./мес.",
+                "clientid": 1770000000070,
+                "clientname": "Auchan (Ашан)",
+                "flghot": 1,
+                "region_id": 2,
+                "search_desc": "работник торгов зал сет гипермаркет сканеровщик сит ритейл аша",
+                "search_geo": "республик башкортоста г. уф ул губайдуллин",
+                "regionname": "Республика Башкортостан",
+                "stationname": None,
+                "numentries": None,
+                "numgeoentries": None,
+                "baseindex": 102,
+                "flgstemmer": 0,
+                "salary_type_title": "р./мес.",
+                "salary_hour": 220.0,
+                "salary_day": 2420.0,
+                "salary_week": 12100.0,
+                "salary_month": 53240.0,
+                "websitevacancynum": "020152",
+                "titleweb": None,
+                    }
+                }
 
-class VacancyQuery(BaseModel):
+
+class VacancySearchFields(BaseModel):
+    """Fields for query pattern
+
+    Use exclude_none with dumb() method to exclude
+    non-values for query
+    """
+    profid: int | None = None
+    placeid: int | None = None
+    clientid: int | None = None
+
+    class Config:
+
+        json_schema_extra = {
+            "example": {
+                "profid": 4,
+                "placeid": 143,
+                "clientid": 1770000000070
+                    }
+                }
+
+
+class VacancyTextSearch(VacancySearchFields):
     """Query db for vacancy pattern
 
-    Use exclide_none with dumb() method to exclude
+    Use exclude_none with dumb() method to exclude
     non-values for query
     """
     placeid: int | None = None

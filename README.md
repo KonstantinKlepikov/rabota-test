@@ -40,24 +40,9 @@
 
 ## Ресурсы
 
-### Запуск и остановка dev-стека
-
-1. Go to service folder, f.e. `cd api/app` and create VSCode project by `code .`
-2. Install poery dependencies and add environment for python linting. Use `poetry config virtualenvs.in-project true` for creation of env folder inside project. Then `poetry init` (if pyproject.toml not exist) and `poetry install --with dev`.
-3. Inside container use:
-
-    - `pytest -v -s -x` for all tests
-    - use `python -m IPython` to check code
-    - `mypy --install-types`
-    - `mypy app` and `flake8 app`
-
-- `make serve` to run dev mode
-- `make down` to stop
-- rebuild single service `docker compose up -d --no-deps --build <service-name>`
-
 ### Разработка локально
 
-Для запуска необходимо клонирвоать репозиторий и поместить в корень репозитория `.env` файл следующего содержания
+Для запуска необходимо клонировать репозиторий и поместить в корень репозитория `.env` файл следующего содержания
 
 ```bash
 # mongo dev
@@ -78,13 +63,40 @@ TEST_MONGODB_URL=mongodb://${TEST_ROOT_USERNAME}:${TEST_ROOT_PASSWORD}@erabota-m
 
 ### Старт и остановка dev стека
 
-- `make serve` to run dev mode services
-- `make down` shut down all services
-- rebuild and rerun single service `docker compose up -d --no-deps --build <service-name>`
+1. Для vscode перейди в `cd api/app` и создай проект `code .`
+2. Установи poetry окружение и подготовь линтер. Для этого используй `poetry config virtualenvs.in-project true` и команду `poetry install --with dev`. Перезапусти IDE.
+3. Внутри контейнера можно выполнить:
 
-### Ссылки на локальные ресурсы, которые вы можете использовать для контроля работоспособности стека.
+    - `pytest -v -s -x` для тестирования
+    - используй `python -m IPython` для проверок кода
+    - `mypy --install-types`
+    - `mypy app` и `flake8 app`
+
+- `make serve` для запуска dev-стека
+- `make down` остановка и удаление стека
+- пересобрать отдельный сервис можно так `docker compose up -d --no-deps --build <service-name>`
+
+### Ссылки на локальные ресурсы, которые вы можете использовать для контроля работоспособности стека
 
 - [api swagger docs](http://localhost:8192/docs/)
 - [mongoDB admin panel](http://localhost:8191/)
 
 ### Общее затраченное время и выполненные задачи
+
+12 часов
+
+Выполненые задачи:
+
+- развернут docker compose стек: mongodb-dev, mongodb-test, api, mongo admin panel
+- монго выбрана по причине постановкиз задачи (апи без контракта с возможностью обратно-несовместимых изменений). Кроме того, мы не знаем типы данных
+- реализован полнотекстный поиск
+- методы post и get объединены в один post c необязательным body с полями для фильтрации по запросу к БД (технически оба метода делают одно и тоже)
+- логика поиска по словам AND
+- данные из стороннего апи запрашиваются перед каждым запросом к БД. Производится update, а в случае остутсвия документа - insert
+
+Проблемы сервиса:
+
+- конечно мы не должны запрашивать сторонний апи каждый раз. Сейчас это вызывает избыточные задержки и нагрузку на сервис
+- нужно более четкое описание стороннего апи, чтобы не исходить из предположений о типах данных в ответе
+- стороннему апи нужен более четкий контракт, т.к. расширение модели данных на нашей стороне без валидации - это плохой паттерн
+- реализован только dev и тест. Приложение не готово к продакшену

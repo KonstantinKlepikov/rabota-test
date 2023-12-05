@@ -1,6 +1,5 @@
-from typing import TypeVar, Generic, Type, Any
+from typing import TypeVar, Generic, Type
 from pydantic import BaseModel
-from pymongo.client_session import ClientSession
 from app.config import settings
 
 

@@ -2,7 +2,7 @@ import asyncio
 from pymongo.client_session import ClientSession
 from pymongo.results import UpdateResult
 from app.crud.crud_base import CRUDBase
-from app.schemas.scheme_vacancies import VacancyInOut, VacancyQuery
+from app.schemas.scheme_vacancies import VacancyInOut, VacancyTextSearch
 from app.schemas.constraint import Collections
 from app.config import settings
 
@@ -40,7 +40,7 @@ class CRUDVacancies(CRUDBase[VacancyInOut]):
             ) -> list[UpdateResult]:
         """Replace many existed documents. If not exist - creates them.
         Args:
-            db (ClientSession):session
+            db (ClientSession): session
             obj_in (list[VacancyInOut]): data to replace
 
         Returns:
@@ -54,23 +54,24 @@ class CRUDVacancies(CRUDBase[VacancyInOut]):
     async def text_search(
         self,
         db: ClientSession,
-        obj_in: VacancyQuery
+        obj_in: VacancyTextSearch
             ) -> list[VacancyInOut]:
         """_summary_
 
         Args:
-            db (ClientSession): _description_
-            obj_in (VacancyQuery): _description_
+            db (ClientSession): session
+            obj_in (VacancyTextSearch): search parameters
 
         Returns:
-            list[VacancyInOut]: _description_
+            list[VacancyInOut]: search result
         """
-        q = obj_in.model_dump(exclude_none=True, exclude=('searchstrin', ))
+        q = obj_in.model_dump(exclude_none=True, exclude=('searchstring', ))
+        t = {"$text": {"$search": ' '.join(obj_in.searchstring)}}
+        q.update(t)
         result = []
-        async for res in db.client[self.db_name][self.col_name] \
-            .find({"$text": {"$search": ' '.join(obj_in.searchstring)}}):
-            # .find({"$text": {"$search": ' '.join(obj_in.searchstring), 'filter': q}}): # FIXME:
-                result.append(VacancyInOut(**res))
+        async for res in db.client[self.db_name][self.col_name].find(q):
+            del res['_id']
+            result.append(VacancyInOut(**res))
         return result
 
 

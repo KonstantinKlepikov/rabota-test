@@ -1,11 +1,9 @@
 from typing import Generator
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import IndexModel, TEXT
 from pymongo.client_session import ClientSession
 from pymongo.errors import CollectionInvalid
 from app.config import settings
 from app.schemas.constraint import Collections
-from app.schemas.scheme_vacancies import VacancyInOut
 
 
 def get_client(mongodb_url: str) -> AsyncIOMotorClient:

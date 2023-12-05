@@ -6,7 +6,6 @@ from aiohttp import web
 from aiohttp.test_utils import TestClient
 from yarl import URL
 from app.core.http_session import SessionMaker
-from app.config import settings
 
 
 @lru_cache
